@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Performance Report Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Website analysis</div>
+    <h1>Performance Report Generator</h1>
+    <p class="sub">Run a Google PageSpeed Insights audit and generate a clear Desktop and Mobile performance report.</p>
+  </header>
+
+  <section class="panel url-panel">
+    <div class="url-section">
+      <div class="url-section-head"><label for="urlList">Website URLs</label><span class="url-count" id="urlCount">0 URLs detected</span></div>
+      <textarea id="urlList" class="url-textarea" rows="7" placeholder="https://example.com&#10;https://example.com/about&#10;https://example.com/contact" aria-describedby="urlHelp"></textarea>
+      <p class="note url-help" id="urlHelp">Add one URL per line, or separate multiple URLs with commas.</p>
+      <button id="runBtn" type="button" class="run-btn">Run analysis</button>
+    </div>
+    <p class="note">This page uses a Google PageSpeed Insights API key configured in the code. Restrict the key in Google Cloud Console before public deployment.</p>
+    <div id="status" class="status" role="status"></div>
+  </section>
+
+  <main id="results" class="results">
+    <aside class="report-sidebar" aria-label="Report navigation">
+      <div class="sidebar-brand"><span class="sidebar-mark"></span><strong>Pagespeed</strong></div>
+      <div class="sidebar-pages">
+        <div class="sidebar-heading"><strong>Analyzed URLs</strong><span id="batchResultsCount"></span></div>
+        <div class="batch-results" id="batchResults"></div>
+      </div>
+      <div class="sidebar-sections">
+        <strong class="sidebar-title">Report sections</strong>
+        <nav>
+        <a href="#summary">Score summary</a>
+        <a href="#deviceScores">Device scores</a>
+        <a href="#auditOverview">Audit overview</a>
+        <a href="#opportunitiesPanel">Opportunities</a>
+        <a href="#diagnosticsPanel">Diagnostics</a>
+        <a href="#recommendationsPanel">Recommendations</a>
+        <a href="#simulatorPanel">Performance simulator</a>
+        <a href="#exportPanel">Export report</a>
+        </nav>
+      </div>
+    </aside>
+    <div class="report-content">
+      <div class="report-toolbar">
+        <div><span class="toolbar-label">Selected page</span><strong id="selectedPageName">Select a URL</strong></div>
+        <div class="toolbar-actions">
+          <button id="backToPagesBtn" type="button" class="secondary" hidden>All pages</button>
+          <button id="startOverBtn" type="button" class="secondary">Start over</button>
+        </div>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="twocol" id="deviceScores">
+        <section class="panel" id="desktopPanel"></section>
+        <section class="panel" id="mobilePanel"></section>
+      </div>
+      <section class="panel" id="auditOverview">
+        <h2>Audit overview</h2>
+        <div id="overviewContent"></div>
+      </section>
+      <div class="two-panels">
+        <section class="panel" id="opportunitiesPanel"><h2>Opportunities</h2><div id="opportunities"></div></section>
+        <section class="panel" id="diagnosticsPanel"><h2>Diagnostics</h2><div id="diagnostics"></div></section>
+      </div>
+      <section class="panel" id="recommendationsPanel"><h2>Recommended priorities</h2><div id="recommendations"></div></section>
+      <section class="panel" id="simulatorPanel">
+      <div class="simulator-head">
+        <div><h2>Performance score simulator</h2><div class="note" style="margin:0">Adjust metric scores to estimate which improvements may help the overall performance score.</div></div>
+        <div class="simulator-controls">
+          <div class="segmented" aria-label="Simulator device"><button id="desktopSimulatorBtn" type="button" class="active">Desktop</button><button id="mobileSimulatorBtn" type="button">Mobile</button></div>
+          <button id="resetSimulatorBtn" type="button" class="secondary">Reset</button>
+        </div>
+      </div>
+      <div class="simulator-grid">
+        <div class="simulator-metrics" id="simulatorMetrics"></div>
+        <div>
+          <div class="estimated-score"><strong id="estimatedScore">—</strong><span id="estimatedLabel">Estimated performance score</span></div>
+          <div class="impact-list" id="simulatorImpacts"></div>
+        </div>
+      </div>
+      <div class="footer" style="margin-bottom:0">Estimate method: Current Lighthouse metric scores are adjusted with representative metric weights. This is a planning estimate, not a guarantee of the next PageSpeed result.</div>
+    </section>
+    <section class="panel export-panel" id="exportPanel" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+      <div><strong>Export report</strong><div class="note" style="margin:4px 0 0">Download a neutral PDF summary of the latest audit.</div></div>
+      <button id="pdfBtn" type="button" class="secondary">Download PDF report</button>
+    </section>
+    <div class="footer">Data source: Google PageSpeed Insights API. Lab results can vary between runs due to testing conditions. Field Core Web Vitals are based on Chrome UX Report data when available.</div>
+    </div>
+  </main>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
