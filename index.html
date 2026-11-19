@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="main.css?v=20261106-13">
 
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="eyebrow">Website analysis</div>
-    <h1>Performance Report Generator</h1>
-    <p class="sub">Run a Google PageSpeed Insights audit and generate a clear Desktop and Mobile performance report.</p>
+    <div class="eyebrow">Website intelligence</div>
+    <h1>Performance <span>Report</span></h1>
+    <p class="sub">Turn real-world website data into clear, actionable performance insights across Desktop and Mobile.</p>
   </header>
 
   <section class="panel url-panel">
@@ -31,73 +31,95 @@
   </section>
 
   <main id="results" class="results">
-    <aside class="report-sidebar" aria-label="Report navigation">
+    <aside class="report-sidebar" aria-label="Analyzed pages">
       <div class="sidebar-brand"><span class="sidebar-mark"></span><strong>Pagespeed</strong></div>
       <div class="sidebar-pages">
         <div class="sidebar-heading"><strong>Analyzed URLs</strong><span id="batchResultsCount"></span></div>
         <div class="batch-results" id="batchResults"></div>
       </div>
-      <div class="sidebar-sections">
-        <strong class="sidebar-title">Report sections</strong>
-        <nav>
-        <a href="#summary">Score summary</a>
-        <a href="#deviceScores">Device scores</a>
-        <a href="#auditOverview">Audit overview</a>
-        <a href="#opportunitiesPanel">Opportunities</a>
-        <a href="#diagnosticsPanel">Diagnostics</a>
-        <a href="#recommendationsPanel">Recommendations</a>
-        <a href="#simulatorPanel">Performance simulator</a>
-        <a href="#exportPanel">Export report</a>
-        </nav>
-      </div>
+      <nav class="sidebar-sections" aria-label="Report sections">
+        <span class="sidebar-title">Report sections</span>
+        <button type="button" class="sidebar-link active" data-sidebar-section="performance" aria-current="page">Performance</button>
+        <button type="button" class="sidebar-link" data-sidebar-section="crux">CrUX data</button>
+        <button type="button" class="sidebar-link" data-sidebar-section="page-weight">Page weight</button>
+        <button type="button" class="sidebar-link" data-sidebar-section="recommendations">Recommendations</button>
+      </nav>
     </aside>
     <div class="report-content">
-      <div class="report-toolbar">
-        <div><span class="toolbar-label">Selected page</span><strong id="selectedPageName">Select a URL</strong></div>
-        <div class="toolbar-actions">
-          <button id="backToPagesBtn" type="button" class="secondary" hidden>All pages</button>
-          <button id="startOverBtn" type="button" class="secondary">Start over</button>
+      <div class="device-toolbar">
+        <div class="device-tabs" role="tablist" aria-label="Report device">
+          <button id="desktopReportBtn" type="button" role="tab" aria-selected="true" class="active">Desktop</button>
+          <button id="mobileReportBtn" type="button" role="tab" aria-selected="false">Mobile</button>
         </div>
+        <button id="startOverBtn" type="button" class="start-over-btn secondary">Start over</button>
       </div>
-      <div class="summary" id="summary"></div>
-      <div class="twocol" id="deviceScores">
-        <section class="panel" id="desktopPanel"></section>
-        <section class="panel" id="mobilePanel"></section>
-      </div>
-      <section class="panel" id="auditOverview">
-        <h2>Audit overview</h2>
-        <div id="overviewContent"></div>
+      <div class="summary report-section" id="summary" data-report-section="summary"></div>
+      <section class="performance-metrics report-section" data-report-section="performance" aria-label="Performance metrics">
+        <div class="performance-metrics-head">
+          <div>
+            <h2>Performance metrics</h2>
+            <p id="performanceMetricsLabel">Lighthouse lab results</p>
+          </div>
+          <div class="performance-metrics-actions">
+            <button id="openSimulatorBtn" type="button" class="simulator-open-btn" aria-haspopup="dialog" aria-controls="simulatorPopup">Open simulator</button>
+          </div>
+        </div>
+        <div class="metric-table-wrap" id="performanceMetricCards"></div>
       </section>
-      <div class="two-panels">
-        <section class="panel" id="opportunitiesPanel"><h2>Opportunities</h2><div id="opportunities"></div></section>
-        <section class="panel" id="diagnosticsPanel"><h2>Diagnostics</h2><div id="diagnostics"></div></section>
-      </div>
-      <section class="panel" id="recommendationsPanel"><h2>Recommended priorities</h2><div id="recommendations"></div></section>
-      <section class="panel" id="simulatorPanel">
-      <div class="simulator-head">
-        <div><h2>Performance score simulator</h2><div class="note" style="margin:0">Adjust metric scores to estimate which improvements may help the overall performance score.</div></div>
-        <div class="simulator-controls">
-          <div class="segmented" aria-label="Simulator device"><button id="desktopSimulatorBtn" type="button" class="active">Desktop</button><button id="mobileSimulatorBtn" type="button">Mobile</button></div>
-          <button id="resetSimulatorBtn" type="button" class="secondary">Reset</button>
+      <section class="crux-section report-section" data-report-section="crux" aria-label="Chrome User Experience Report field data" hidden>
+        <div class="crux-head">
+          <div>
+            <h2>CrUX field data</h2>
+            <p id="cruxDescription">Real-world Chrome user experience metrics from the previous 28 days</p>
+          </div>
+          <span id="cruxCategory" class="crux-overall-category" hidden></span>
         </div>
-      </div>
-      <div class="simulator-grid">
-        <div class="simulator-metrics" id="simulatorMetrics"></div>
-        <div>
-          <div class="estimated-score"><strong id="estimatedScore">—</strong><span id="estimatedLabel">Estimated performance score</span></div>
-          <div class="impact-list" id="simulatorImpacts"></div>
+        <div id="cruxMetrics" class="crux-metrics"></div>
+      </section>
+      <section class="page-weight-section report-section" data-report-section="page-weight" aria-label="Page weight breakdown" hidden>
+        <div class="page-weight-head">
+          <div>
+            <h2>Page weight breakdown</h2>
+            <p>All network resources loaded by the selected Lighthouse report</p>
+          </div>
         </div>
-      </div>
-      <div class="footer" style="margin-bottom:0">Estimate method: Current Lighthouse metric scores are adjusted with representative metric weights. This is a planning estimate, not a guarantee of the next PageSpeed result.</div>
-    </section>
-    <section class="panel export-panel" id="exportPanel" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-      <div><strong>Export report</strong><div class="note" style="margin:4px 0 0">Download a neutral PDF summary of the latest audit.</div></div>
-      <button id="pdfBtn" type="button" class="secondary">Download PDF report</button>
-    </section>
-    <div class="footer">Data source: Google PageSpeed Insights API. Lab results can vary between runs due to testing conditions. Field Core Web Vitals are based on Chrome UX Report data when available.</div>
+        <div id="pageWeightContent"></div>
+      </section>
+      <section class="recommendations-section report-section" id="recommendationsSection" data-report-section="recommendations" aria-label="Recommendations" hidden>
+        <div class="recommendations-head">
+          <div>
+            <h2 id="recommendationsTitle">Performance recommendations</h2>
+            <p id="recommendationsSubtitle">Google PageSpeed Insights and Lighthouse audit recommendations</p>
+          </div>
+        </div>
+        <div id="recommendationCategoryTabs" class="recommendation-category-tabs" role="tablist" aria-label="Recommendation categories"></div>
+        <div id="performanceMetricTabs" class="recommendation-category-tabs" role="tablist" aria-label="Performance metric recommendations"></div>
+        <div id="recommendations"></div>
+      </section>
     </div>
   </main>
 </div>
-<script src="main.js"></script>
+<dialog id="simulatorPopup" class="simulator-popup" aria-labelledby="simulatorTitle">
+  <div class="simulator-popup-head">
+    <div>
+      <h2 id="simulatorTitle">Performance score simulator</h2>
+      <p>Adjust metric scores to explore how improvements could affect performance.</p>
+    </div>
+    <button id="closeSimulatorBtn" type="button" class="simulator-close-btn" aria-label="Close simulator">Close</button>
+  </div>
+  <div class="simulator-popup-grid">
+    <div id="simulatorMetrics" class="simulator-metrics"></div>
+    <aside class="simulator-result">
+      <div class="estimated-score">
+        <strong id="estimatedScore">—</strong>
+        <span id="estimatedLabel">Estimated performance score</span>
+      </div>
+      <div id="simulatorImpacts" class="impact-list"></div>
+      <p class="simulator-note">This is a directional estimate based on Lighthouse metric weights, not a guaranteed PageSpeed result.</p>
+      <button id="resetSimulatorBtn" type="button" class="secondary simulator-reset-btn">Reset scores</button>
+    </aside>
+  </div>
+</dialog>
+<script src="main.js?v=20261106-13"></script>
 </body>
 </html>
